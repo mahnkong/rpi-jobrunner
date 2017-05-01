@@ -7,7 +7,7 @@ WORKDIR /jobrunner/ruby
 
 RUN apk update && \
     apk upgrade && \
-    apk add bash ruby ruby-irb ruby-rake ruby-io-console ruby-bigdecimal ruby-json ruby-bundler git && \
+    apk add bash ruby ruby-irb ruby-rake ruby-bundler git && \
     rm -rf /var/cache/apk/* && \
     bundle install && \
     rake install
