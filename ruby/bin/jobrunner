@@ -1,10 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
-DIR=`dirname $0`
-COMMAND="ruby -I$DIR/../lib $DIR/../lib/jobrunner/app.rb $*"
-exec $COMMAND
-
-
-
-
-
+require 'jobrunner/app'
+app = JobRunner::App.new
+app.run()
