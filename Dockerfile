@@ -1,11 +1,8 @@
-FROM hypriot/rpi-alpine:3.5
+FROM mahnkong/docker-rpi-docker:v0.1.0
 
 MAINTAINER Andreas Mahnke <mahnkong@gmx.de>
 
-ENV RCLONE_VERSION v1.36
-
 COPY . /jobrunner
-
 WORKDIR /jobrunner/ruby
 
 RUN apk update && \
