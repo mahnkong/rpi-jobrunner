@@ -1,0 +1,6 @@
+*.un~
+*.swp
+pkg/*.gem
+.vscode
+docker.sh
+config.yaml

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR=`dirname $0`
+COMMAND="ruby -I$DIR/../lib $DIR/../lib/jobrunner/app.rb $*"
+exec $COMMAND
+
+
+
+
+
