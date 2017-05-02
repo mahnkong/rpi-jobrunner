@@ -7,9 +7,9 @@ WORKDIR /jobrunner/ruby
 
 RUN apk update && \
     apk upgrade && \
-    apk add bash ruby ruby-irb ruby-rake ruby-bundler && \
+    apk add bash ruby ruby-irb ruby-rake ruby-bundler tzdata && \
     rm -rf /var/cache/apk/* && \
     bundle install && \
     rake install
 
-ENTRYPOINT ["jobrunner"]
+ENTRYPOINT ["/jobrunner/entrypoint.sh"]
