@@ -26,7 +26,7 @@ module JobRunner
                 if job['type'] == 'cron' 
                     @logger.info("registering job '#{job['name']}'")
                     scheduler.cron job['timespec'], :overlap => false do
-                        @logger.info("executing job '#{job['name']} [#{job['command']}]")
+                        @logger.info("executing job '#{job['name']}' [#{job['command']}]")
                         stdout, stderr, exit_status = Open3.capture3(job['command'])
                         unless exit_status.success?
                             @logger.error("Job '#{job['name']}' failed with code '#{exit_status.exitstatus}', stderr:\n#{stderr}")
@@ -40,7 +40,7 @@ module JobRunner
             end
 
             scheduler.join
-       end
+        end
     end    
 
     if __FILE__ == $0
