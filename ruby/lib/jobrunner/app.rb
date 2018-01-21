@@ -1,6 +1,7 @@
 require 'rufus-scheduler'
 require 'logger'
 require 'open3'
+require 'net/http'
 require_relative './job_config.rb'
 
 module JobRunner
@@ -20,7 +21,9 @@ module JobRunner
                 exit(1)
             end
             job_config = JobConfig.new(config_file: config_file)
-
+            if ENV["NOTIFY_RASPBERRYPI"]
+                http = Net::HTTP.new("raspberrypi", 7777)
+            end
             scheduler = Rufus::Scheduler.new
             job_config.jobs.each do | job |
                 if job['type'] == 'cron' 
@@ -30,8 +33,10 @@ module JobRunner
                         stdout, stderr, exit_status = Open3.capture3(job['command'])
                         unless exit_status.success?
                             @logger.error("Job '#{job['name']}' failed with code '#{exit_status.exitstatus}', stderr:\n#{stderr}")
+                            http.request(Net::HTTP::Get.new("/led/red/on")) if http
                         else
                             @logger.info("job '#{job['name']}' was successfully executed")
+                            http.request(Net::HTTP::Get.new("/led/green/blink")) if http
                         end
                     end
                 else
