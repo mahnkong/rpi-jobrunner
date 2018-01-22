@@ -2,6 +2,7 @@ require 'rufus-scheduler'
 require 'logger'
 require 'open3'
 require 'net/http'
+require 'set'
 require_relative './job_config.rb'
 
 module JobRunner
@@ -12,6 +13,7 @@ module JobRunner
             $stdout.sync = true
             @logger = Logger.new($stdout)
             @logger.level = Logger::DEBUG
+            @errors = Set.new()
         end
  
         def run
@@ -33,10 +35,15 @@ module JobRunner
                         stdout, stderr, exit_status = Open3.capture3(job['command'])
                         unless exit_status.success?
                             @logger.error("Job '#{job['name']}' failed with code '#{exit_status.exitstatus}', stderr:\n#{stderr}")
+                            @errors.add(job['name'])
                             http.request(Net::HTTP::Get.new("/led/red/on")) if http
                         else
                             @logger.info("job '#{job['name']}' was successfully executed")
-                            http.request(Net::HTTP::Get.new("/led/green/blink")) if http
+                            @errors.delete(job['name'])
+                            if http
+                                http.request(Net::HTTP::Get.new("/led/red/off")) if @errors.size == 0
+                                http.request(Net::HTTP::Get.new("/led/green/blink"))
+                            end
                         end
                     end
                 else
