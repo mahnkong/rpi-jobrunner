@@ -30,4 +30,3 @@ docker run --rm -ti -v /stuff:/stuff -v /var/run/docker.sock:/var/run/docker.soc
  - web interface
  - keeb logs per job exec instance
  - on demand exec
- - show status using leds
