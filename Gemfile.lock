@@ -1,0 +1,44 @@
+PATH
+  remote: .
+  specs:
+    jobrunner (0.0.1.pre.PRE)
+      rufus-scheduler
+      sinatra
+      tzinfo-data
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    et-orbi (1.1.0)
+      tzinfo
+    minitest (5.11.3)
+    mustermann (1.0.2)
+    rack (2.0.5)
+    rack-protection (2.0.1)
+      rack
+    rake (10.5.0)
+    rufus-scheduler (3.4.2)
+      et-orbi (~> 1.0)
+    sinatra (2.0.1)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.1)
+      tilt (~> 2.0)
+    thread_safe (0.3.6)
+    tilt (2.0.8)
+    tzinfo (1.2.5)
+      thread_safe (~> 0.1)
+    tzinfo-data (1.2018.4)
+      tzinfo (>= 1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.11)
+  jobrunner!
+  minitest (~> 5.0)
+  rake (~> 10.0)
+
+BUNDLED WITH
+   1.16.1
