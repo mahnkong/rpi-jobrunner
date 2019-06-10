@@ -1,7 +1,6 @@
 require 'rufus-scheduler'
 require 'logger'
 require 'open3'
-require 'net/http'
 require 'set'
 require_relative './job_config.rb'
 
@@ -15,7 +14,7 @@ module JobRunner
             @logger.level = Logger::DEBUG
             @errors = Set.new()
         end
- 
+
         def run
             config_file = ARGV[0]
             if !config_file || !File.file?(config_file)
@@ -24,11 +23,12 @@ module JobRunner
             end
             job_config = JobConfig.new(config_file: config_file)
             if ENV["NOTIFY_RASPBERRYPI"]
-                http = Net::HTTP.new("raspberrypi", 7777)
+                fd = IO.sysopen('/dev/ttyACM0', 'w+')
+                serial = IO.new(fd)
             end
             scheduler = Rufus::Scheduler.new
             job_config.jobs.each do | job |
-                if job['type'] == 'cron' 
+                if job['type'] == 'cron'
                     @logger.info("registering job '#{job['name']}'")
                     scheduler.cron job['timespec'], :overlap => false do
                         @logger.info("executing job '#{job['name']}' [#{job['command']}]")
@@ -36,13 +36,13 @@ module JobRunner
                         unless exit_status.success?
                             @logger.error("Job '#{job['name']}' failed with code '#{exit_status.exitstatus}', stderr:\n#{stderr}")
                             @errors.add(job['name'])
-                            http.request(Net::HTTP::Get.new("/led/red/on")) if http
+                            serial.print 'LEDRED' if serial
                         else
                             @logger.info("job '#{job['name']}' was successfully executed")
                             @errors.delete(job['name'])
-                            if http
-                                http.request(Net::HTTP::Get.new("/led/red/off")) if @errors.size == 0
-                                http.request(Net::HTTP::Get.new("/led/green/blink"))
+                            if serial
+                                serial.print 'LEDCLEAR' if @errors.size == 0
+                                serial.print 'LEDGREEN'
                             end
                         end
                     end
@@ -53,7 +53,7 @@ module JobRunner
 
             scheduler.join
         end
-    end    
+    end
 
     if __FILE__ == $0
         app = App.new
