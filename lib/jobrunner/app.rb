@@ -42,6 +42,7 @@ module JobRunner
                             @errors.delete(job['name'])
                             if serial
                                 serial.print 'CLEAR.' if @errors.size == 0
+                                sleep 0.5
                                 serial.print 'GREEN.'
                             end
                         end
