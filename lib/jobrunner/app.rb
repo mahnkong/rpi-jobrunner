@@ -36,13 +36,13 @@ module JobRunner
                         unless exit_status.success?
                             @logger.error("Job '#{job['name']}' failed with code '#{exit_status.exitstatus}', stderr:\n#{stderr}")
                             @errors.add(job['name'])
-                            serial.print 'LEDRED' if serial
+                            serial.print 'RED.' if serial
                         else
                             @logger.info("job '#{job['name']}' was successfully executed")
                             @errors.delete(job['name'])
                             if serial
-                                serial.print 'LEDCLEAR' if @errors.size == 0
-                                serial.print 'LEDGREEN'
+                                serial.print 'CLEAR.' if @errors.size == 0
+                                serial.print 'GREEN.'
                             end
                         end
                     end
